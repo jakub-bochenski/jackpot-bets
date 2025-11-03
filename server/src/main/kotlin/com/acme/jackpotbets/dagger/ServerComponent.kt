@@ -5,6 +5,8 @@ import com.acme.jackpotbets.dagger.module.ConfigurationModule
 import com.acme.jackpotbets.dagger.module.PocBindModule
 import com.acme.jackpotbets.dagger.module.VertxModule
 import com.acme.jackpotbets.db.migration.LiquibaseModule
+import com.acme.jackpotbets.kafka.KafkaConsumerModule
+import com.acme.jackpotbets.kafka.KafkaProducerModule
 import com.acme.jackpotbets.tx.TransactionModule
 import com.acme.jackpotbets.validation.ValidationModule
 import dagger.Component
@@ -20,6 +22,8 @@ import javax.inject.Singleton
         PersistenceModule::class,
         TransactionModule::class,
         ValidationModule::class,
+        KafkaProducerModule::class,
+        KafkaConsumerModule::class,
     ]
 )
 interface ServerComponent {

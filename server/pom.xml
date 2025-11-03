@@ -79,6 +79,10 @@
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
+            <artifactId>vertx-kafka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
             <artifactId>vertx-lang-kotlin-coroutines</artifactId>
         </dependency>
         <dependency>
@@ -229,6 +233,10 @@
                             <alias>database</alias>
                             <run>
                                 <hostname>postgres</hostname>
+                                <network>
+                                    <mode>custom</mode>
+                                    <name>kafka-net</name>
+                                </network>
                                 <env>
                                     <POSTGRES_DB>${service.db.database}</POSTGRES_DB>
                                     <POSTGRES_USER>${service.db.username}</POSTGRES_USER>
@@ -245,6 +253,44 @@
                                 <wait>
                                     <log><![CDATA[(?si)(init process complete|skipping initialization).*ready to accept connections]]></log>
                                 </wait>
+                            </run>
+                        </image>
+                        <image>
+                            <name>public.ecr.aws/bitnami/kafka:4.1</name>
+                            <alias>kafka</alias>
+                            <run>
+                                <hostname>kafka</hostname>
+                                <network>
+                                    <mode>custom</mode>
+                                    <name>kafka-net</name>
+                                </network>
+                                <env>
+                                    <KAFKA_CFG_NODE_ID>0</KAFKA_CFG_NODE_ID>
+                                    <KAFKA_CFG_PROCESS_ROLES>controller,broker</KAFKA_CFG_PROCESS_ROLES>
+                                    <KAFKA_CFG_LISTENERS>PLAINTEXT://:9092,CONTROLLER://:9093</KAFKA_CFG_LISTENERS>
+                                    <KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP>CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT</KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP>
+                                    <KAFKA_CFG_CONTROLLER_QUORUM_VOTERS>0@kafka:9093</KAFKA_CFG_CONTROLLER_QUORUM_VOTERS>
+                                    <KAFKA_CFG_CONTROLLER_LISTENER_NAMES>CONTROLLER</KAFKA_CFG_CONTROLLER_LISTENER_NAMES>
+                                    <KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE>true</KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE>
+                                    <KAFKA_CFG_ADVERTISED_LISTENERS>PLAINTEXT://kafka:9092</KAFKA_CFG_ADVERTISED_LISTENERS>
+                                </env>
+                                <ports>
+                                    <port>${kafka.port}:9092</port>
+                                </ports>
+                                <wait>
+                                    <tcp>
+                                        <ports>
+                                            <port>9092</port>
+                                        </ports>
+                                    </tcp>
+                                    <time>60000</time>
+                                    <exec>
+                                        <postStart>kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic jackpot-bets --partitions 1 --replication-factor 1</postStart>
+                                    </exec>
+                                </wait>
+                                <cmd>
+                                    <shell>/opt/bitnami/scripts/kafka/run.sh</shell>
+                                </cmd>
                             </run>
                         </image>
                         <image>
@@ -291,13 +337,18 @@
                                 </tags>
                             </build>
                             <run>
+                                <network>
+                                    <mode>custom</mode>
+                                    <name>kafka-net</name>
+                                </network>
                                 <env>
                                     <SERVER_VERTICLE_COUNT>2</SERVER_VERTICLE_COUNT>
                                     <DATABASE_LIQUIBASE_CONTEXTS>test</DATABASE_LIQUIBASE_CONTEXTS>
                                     <DATABASE_USERNAME>${service.db.username}</DATABASE_USERNAME>
                                     <DATABASE_PASSWORD>${service.db.password}</DATABASE_PASSWORD>
                                     <DATABASE_DATABASE>${service.db.database}</DATABASE_DATABASE>
-                                    <DATABASE_HOST>+${docker.container.database.ip}</DATABASE_HOST>
+                                    <DATABASE_HOST>postgres</DATABASE_HOST>
+                                    <KAFKA_BOOTSTRAP_SERVERS>kafka:9092</KAFKA_BOOTSTRAP_SERVERS>
                                 </env>
                                 <ports>
                                     <port>${service.host}:${service.port}:8080</port>
@@ -309,6 +360,7 @@
                                 </wait>
                                 <dependsOn>
                                     <container>database</container>
+                                    <container>kafka</container>
                                 </dependsOn>
                                 <log>
                                     <enabled>true</enabled>
@@ -467,6 +519,7 @@
                 <service.debug.port>8000</service.debug.port>
                 <service.metrics.port>8888</service.metrics.port>
                 <postgres.port>5432</postgres.port>
+                <kafka.port>9092</kafka.port>
                 <postgres.data.volume>postgres-data</postgres.data.volume>
             </properties>
             <build>

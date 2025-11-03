@@ -1,6 +1,7 @@
 package com.acme.jackpotbets.dagger.module
 
 import com.acme.jackpotbets.option.ApplicationOptions
+import com.acme.jackpotbets.option.KafkaOptions
 import com.acme.jackpotbets.option.MetricsOptions
 import com.acme.jackpotbets.option.PersistenceOptions
 import com.acme.jackpotbets.option.ServerOptions
@@ -18,6 +19,7 @@ class ConfigurationModule {
         .withMapping(PersistenceOptions::class.java)
         .withMapping(ApplicationOptions::class.java)
         .withMapping(MetricsOptions::class.java)
+        .withMapping(KafkaOptions::class.java)
         .build()
 
     @Provides
@@ -32,4 +34,6 @@ class ConfigurationModule {
     @Provides
     fun metricsOptions(): MetricsOptions = config.getConfigMapping(MetricsOptions::class.java)
 
+    @Provides
+    fun kafkaOptions(): KafkaOptions = config.getConfigMapping(KafkaOptions::class.java)
 }

@@ -1,6 +1,8 @@
 package com.acme.jackpotbets.server
 
 import com.acme.jackpotbets.exception.DomainException
+import com.acme.jackpotbets.rest.BetRestHandler
+import com.acme.jackpotbets.rest.RewardRestHandler
 import com.acme.jackpotbets.rest.sendError
 import com.acme.jackpotbets.rest.sendJson
 import com.acme.jackpotbets.rest.sendMessage
@@ -34,10 +36,13 @@ private val log = KotlinLogging.logger { }
 
 class ServerVerticle @Inject constructor(
     httpServerProvider: Provider<HttpServer>,
+    betRestHandlerProvider: Provider<BetRestHandler>,
+    private val rewardRestHandler: RewardRestHandler,
     private val validationHandler: ValidationHandler,
 ) : CoroutineVerticle(), CoroutineRouterSupport {
 
     private val httpServer: HttpServer = httpServerProvider.get()
+    private val betRestHandler: BetRestHandler = betRestHandlerProvider.get()
 
     override suspend fun start() {
         val router = Router.router(vertx)
@@ -57,6 +62,15 @@ class ServerVerticle @Inject constructor(
         router.get("/health")
             .handler { it.sendJson(200, JsonObject.of("status", "ok")) }
 
+        router.post("/bets")
+            .consumes(MIME_TYPE)
+            .produces(MIME_TYPE)
+            .coHandler { betRestHandler.postBet(it) }
+
+        router.put("/reward/:betId")
+            .produces(MIME_TYPE)
+            .coHandler { rewardRestHandler.reward(it) }
+
         httpServer.requestHandler(router)
 
         httpServer
@@ -66,6 +80,7 @@ class ServerVerticle @Inject constructor(
     }
 
     override suspend fun stop() {
+        betRestHandler.close()
         httpServer.close().coAwait()
     }
 }

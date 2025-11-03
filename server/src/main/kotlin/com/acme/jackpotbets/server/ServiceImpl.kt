@@ -14,6 +14,7 @@ private val log = KotlinLogging.logger { }
 class ServiceImpl @Inject constructor(
     private val vertx: Vertx,
     private val verticleProvider: Provider<ServerVerticle>,
+    private val consumerVerticleProvider: Provider<ConsumerVerticle>,
     private val options: ServerOptions
 ) : Service {
     override fun start() {
@@ -31,9 +32,13 @@ class ServiceImpl @Inject constructor(
                     .onFailure { e -> log.error(e) { "Server verticle failed to deploy" } }
             }.toList()
 
+        val consumerVerticle = vertx.deployVerticle(consumerVerticleProvider.get())
+            .onSuccess { log.info { "Consumer verticle $it deployed" } }
+            .onFailure { e -> log.error(e) { "Consumer verticle failed to deploy" } }
+
         vertxRunBlocking {
             Future
-                .join(serverVerticles)
+                .join(serverVerticles + consumerVerticle)
                 .onFailure {
                     log.error { "Failed to deploy all server verticles. Aborting." }
                     stop()
