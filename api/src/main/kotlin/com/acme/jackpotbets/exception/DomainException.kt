@@ -3,7 +3,7 @@ package com.acme.jackpotbets.exception
 open class DomainException(
     val statusCode: Int,
     override val message: String?,
-    override val cause: Throwable?,
+    override val cause: Throwable? = null,
 ) : Exception(message, cause)
 
 class BadArgumentException(

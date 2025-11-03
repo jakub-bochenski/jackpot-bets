@@ -1,6 +1,7 @@
 package com.acme.jackpotbets.bet
 
 import com.acme.jackpotbets.db.JackpotDao
+import com.acme.jackpotbets.exception.DomainException
 import com.acme.jackpotbets.model.jooq.enums.ContributionType.REWARD
 import com.acme.jackpotbets.rest.PlacedBet
 import com.acme.jackpotbets.tx.TransactionOperation
@@ -55,7 +56,7 @@ class BetService constructor(
         try {
             tx {
                 val jackpot = jackpotDao.findByBetId(betId)
-                    ?: error("Jackpot not found for bet: bet_id=$betId")
+                    ?: throw DomainException(409, "Jackpot not found for bet: bet_id=$betId")
 
                 val rewardAmount = jackpot.tryToWin(generator)
 
