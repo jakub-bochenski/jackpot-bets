@@ -1,0 +1,232 @@
+complexity:
+  active: true
+  CyclomaticComplexMethod:
+    active: false
+  CognitiveComplexMethod:
+    active: true
+  LongParameterList:
+    functionThreshold: 7
+    constructorThreshold: 10
+  MethodOverloading:
+    active: true
+  NestedScopeFunctions:
+    active: false
+  ReplaceSafeCallChainWithRun:
+    active: false # https://github.com/detekt/detekt/issues/7849
+  TooManyFunctions:
+    ignoreDeprecated: true
+    ignorePrivate: true
+    ignoreOverridden: true
+  LongMethod:
+    threshold: 75
+    active: true
+    ignoreAnnotated:
+      - 'Test'
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+  InjectDispatcher:
+    active: true
+  RedundantSuspendModifier:
+    # As of Detekt 1.23.6, this seems to report false positives with Kotlin context receivers
+    active: false
+  SuspendFunWithCoroutineScopeReceiver:
+    active: true
+  SuspendFunWithFlowReturnType:
+    active: true
+
+empty-blocks:
+  active: true
+  EmptyFunctionBlock:
+    ignoreOverridden: true
+
+exceptions:
+  active: true
+  ObjectExtendsThrowable:
+    active: true
+  TooGenericExceptionCaught:
+    exceptionNames:
+      - ArrayIndexOutOfBoundsException
+      - Error
+      - IllegalMonitorStateException
+      - IndexOutOfBoundsException
+      - NullPointerException
+      - RuntimeException
+      - Throwable
+  InstanceOfCheckForException:
+    active: true
+
+formatting:
+  active: true
+  excludes:
+    - '**/generated/**'
+    - '**/db/JackpotDao*.kt' # https://github.com/detekt/detekt/issues/8140
+  NoWildcardImports:
+    active: true
+  MaximumLineLength:
+    active: false
+  Wrapping:
+    maxLineLength: 160
+  PropertyWrapping:
+    maxLineLength: 160
+  ParameterWrapping:
+    maxLineLength: 160
+  ParameterListWrapping:
+    maxLineLength: 160
+  ArgumentListWrapping:
+    active: false
+    maxLineLength: 160
+  NoEmptyFirstLineInMethodBlock:
+    active: true
+  MultiLineIfElse:
+    active: false
+  ImportOrdering:
+    active: true
+  Filename:
+    active: false
+  AnnotationOnSeparateLine:
+    active: true
+
+naming:
+  active: true
+  FunctionMaxLength:
+    active: true
+    excludes:
+      - '**/src/test/**'
+  InvalidPackageDeclaration:
+    rootPackage: 'com.acme.jackpotbets'
+    requireRootInDeclaration: true
+  LambdaParameterNaming:
+    active: true
+  NonBooleanPropertyPrefixedWithIs:
+    active: true
+  VariableMaxLength:
+    active: true
+    maximumVariableNameLength: 40
+
+performance:
+  active: true
+  CouldBeSequence:
+    active: true
+  UnnecessaryPartOfBinaryExpression:
+    active: true
+
+potential-bugs:
+  active: true
+  CastNullableToNonNullableType:
+    active: true
+  CastToNullableType:
+    active: true
+  DontDowncastCollectionTypes:
+    active: true
+  ElseCaseInsteadOfExhaustiveWhen:
+    active: true
+  ExitOutsideMain:
+    active: true
+  ImplicitUnitReturnType:
+    active: false
+  NullCheckOnMutableProperty:
+    active: true
+  PropertyUsedBeforeDeclaration:
+    active: false
+  UnconditionalJumpStatementInLoop:
+    active: true
+  UnreachableCode:
+    # As of Detekt 1.23.6, this seems to report false positives with Kotlin context receivers
+    active: false
+  UnsafeCallOnNullableType:
+    active: true
+    excludes:
+      - '**/com/acme/jackpotbets/db/**' # working with jOOQ is tedious without !! operator
+
+style:
+  active: true
+  AlsoCouldBeApply:
+    active: true
+  BracesOnIfStatements:
+    active: true
+    singleLine: never
+    multiLine: consistent
+  BracesOnWhenStatements:
+    active: true
+    singleLine: never
+    multiLine: necessary
+  CanBeNonNullable:
+    active: true
+  ClassOrdering:
+    active: false
+  CollapsibleIfStatements:
+    active: true
+  DestructuringDeclarationWithTooManyEntries:
+    active: true
+    excludes:
+      - '**/com/acme/jackpotbets/db/**' # it's often desirable to destructure jOOQ record
+  DoubleNegativeLambda:
+    active: true
+  EqualsOnSignatureLine:
+    active: true
+  ExpressionBodySyntax:
+    active: true
+  ForbiddenAnnotation:
+    active: true
+  ForbiddenComment:
+    active: false
+  ForbiddenMethodCall:
+    active: true
+    methods:
+      - 'kotlin.io.print'
+      - 'kotlin.io.println'
+      - 'java.lang.System.out.print'
+      - 'java.lang.System.out.println'
+      - 'java.lang.System.exit'
+      - 'kotlin.system.exitProcess'
+      - 'io.vertx.ext.web.RequestBody.asPojo'
+      - 'kotlinx.coroutines.runBlocking'
+    ignoreFunction:
+      - 'main'
+  MagicNumber:
+    active: false
+  MaxChainedCallsOnSameLine:
+    active: true
+  MultilineLambdaItParameter:
+    active: true
+  MultilineRawStringIndentation:
+    active: true
+  NoTabs:
+    active: true
+  NullableBooleanCheck:
+    active: true
+  PreferToOverPairSyntax:
+    active: true
+  ReturnCount:
+    excludeGuardClauses: true
+  SpacingBetweenPackageAndImports:
+    active: true
+  StringShouldBeRawString:
+    active: true
+    maxEscapedCharacterCount: 3
+  TrailingWhitespace:
+    active: true
+  UnderscoresInNumericLiterals:
+    active: true
+  UnnecessaryAnnotationUseSiteTarget:
+    active: true
+  UnnecessaryBackticks:
+    active: true
+  UnnecessaryBracesAroundTrailingLambda:
+    active: true
+  UnnecessaryInnerClass:
+    active: true
+  UnnecessaryLet:
+    active: true
+  UnnecessaryParentheses:
+    active: true
+    allowForUnclearPrecedence: true
+  UntilInsteadOfRangeTo:
+    active: true
+  UnusedImports:
+    active: true
+
+

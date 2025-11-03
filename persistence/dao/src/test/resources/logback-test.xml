@@ -1,0 +1,21 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %level [%thread] %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.acme.jackpotbets.db.sql" level="trace"/>
+
+    <!-- spam -->
+    <logger name="liquibase" level="warn"/>
+    <logger name="liquibase.changelog" level="info"/>
+    <logger name="org.hibernate.validator.internal.util.Version" level="off"/>
+    <logger name="org.jooq.Constants" level="off"/>
+
+    <root level="warn">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

@@ -1,0 +1,11 @@
+target
+.project
+.settings
+.classpath
+.factorypath
+dependency-reduced-pom.xml
+*.orig
+*.iml
+.kotlin
+.idea/*
+/contract/.idea/*

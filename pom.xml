@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.acme.jackpotbets</groupId>
+        <artifactId>minimal-parent</artifactId>
+        <version>${revision}${changelist}${sha1}</version>
+        <relativePath>parent/minimal/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>service</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Jackpot Bets</name>
+
+    <modules>
+        <module>parent/minimal</module>
+        <module>parent/kotlin</module>
+        <module>api</module>
+        <module>persistence/jooq-coroutines</module>
+        <module>persistence/migration</module>
+        <module>persistence/model</module>
+        <module>persistence/dao</module>
+        <module>persistence/persistence-test</module>
+        <module>bom</module>
+        <module>rest</module>
+        <module>server</module>
+    </modules>
+
+    <build>
+        <defaultGoal>clean verify</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.cyclonedx</groupId>
+                    <artifactId>cyclonedx-maven-plugin</artifactId>
+                    <version>2.9.1</version>
+                    <configuration>
+                        <projectType>application</projectType>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>run</id>
+            <build>
+                <defaultGoal>clean pre-integration-test</defaultGoal>
+            </build>
+        </profile>
+        <profile>
+            <id>sbom</id>
+            <build>
+                <defaultGoal>compile</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.cyclonedx</groupId>
+                        <artifactId>cyclonedx-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>makeAggregateBom</goal>
+                                </goals>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
