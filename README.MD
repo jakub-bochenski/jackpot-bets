@@ -27,7 +27,8 @@ The process will follow docker logs. To stop it use `CTRL-C`.
 
 The service will be available at `http://localhost:8080`.
 
-The build will also produce a docker image named `jackpot-bets` (see `server/pom.xml` property `build.outputImage`)
+The build will also produce a docker image named `jackpot-bets` (see `server/pom.xml` property `build.outputImage`).
+
 The docker image can be configured via Microprofile configuration (see `api/src/main/kotlin/com/acme/jackpotbets/option` package).
 E.g. with environment variables:
 
